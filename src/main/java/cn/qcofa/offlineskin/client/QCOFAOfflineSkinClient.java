@@ -1,14 +1,13 @@
 package cn.qcofa.offlineskin.client;
 
 import cn.qcofa.offlineskin.QCOFAOfflineSkin;
+import cn.qcofa.offlineskin.network.SkinPayloads;
 import cn.qcofa.offlineskin.skin.LocalSkinFile;
 import cn.qcofa.offlineskin.skin.SkinData;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.PacketByteBuf;
 
 import java.util.UUID;
 
@@ -27,14 +26,12 @@ public class QCOFAOfflineSkinClient implements ClientModInitializer {
         QCOFAOfflineSkin.LOGGER.info("[QCOFA-OfflineSkin] 客户端初始化 by xiaomeow_cn");
 
         // 1. 服务器请求上传皮肤
-        ClientPlayNetworking.registerGlobalReceiver(QCOFAOfflineSkin.SKIN_REQUEST_CHANNEL,
-                (client, handler, buf, responseSender) -> {
-                    client.execute(QCOFAOfflineSkinClient::uploadLocalSkin);
-                });
+        ClientPlayNetworking.registerGlobalReceiver(SkinPayloads.SkinRequestPayload.ID,
+                (payload, context) -> context.client().execute(QCOFAOfflineSkinClient::uploadLocalSkin));
 
         // 2. 服务器广播皮肤
-        ClientPlayNetworking.registerGlobalReceiver(QCOFAOfflineSkin.SKIN_BROADCAST_CHANNEL,
-                (client, handler, buf, responseSender) -> handleBroadcast(client, buf));
+        ClientPlayNetworking.registerGlobalReceiver(SkinPayloads.SkinBroadcastPayload.ID,
+                (payload, context) -> handleBroadcast(context.client(), payload));
 
         // 3. 断开连接清空缓存
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
@@ -54,11 +51,8 @@ public class QCOFAOfflineSkinClient implements ClientModInitializer {
             // 无皮肤：清除本地自身记录
             ClientSkinRegistry.remove(mc.player.getUuid());
             // 若在服务器上，也通知移除
-            if (ClientPlayNetworking.canSend(QCOFAOfflineSkin.SKIN_UPLOAD_CHANNEL)) {
-                PacketByteBuf out = PacketByteBufs.create();
-                out.writeString(model, 16);
-                out.writeVarInt(0);
-                ClientPlayNetworking.send(QCOFAOfflineSkin.SKIN_UPLOAD_CHANNEL, out);
+            if (ClientPlayNetworking.canSend(SkinPayloads.SkinUploadPayload.ID)) {
+                ClientPlayNetworking.send(new SkinPayloads.SkinUploadPayload(model, new byte[0]));
             }
             return;
         }
@@ -68,12 +62,8 @@ public class QCOFAOfflineSkinClient implements ClientModInitializer {
         ClientSkinRegistry.put(mc.player.getUuid(), skin);
 
         // 上传服务器
-        if (ClientPlayNetworking.canSend(QCOFAOfflineSkin.SKIN_UPLOAD_CHANNEL)) {
-            PacketByteBuf out = PacketByteBufs.create();
-            out.writeString(model, 16);
-            out.writeVarInt(data.length);
-            out.writeBytes(data);
-            ClientPlayNetworking.send(QCOFAOfflineSkin.SKIN_UPLOAD_CHANNEL, out);
+        if (ClientPlayNetworking.canSend(SkinPayloads.SkinUploadPayload.ID)) {
+            ClientPlayNetworking.send(new SkinPayloads.SkinUploadPayload(model, data));
         }
     }
 
@@ -90,13 +80,12 @@ public class QCOFAOfflineSkinClient implements ClientModInitializer {
     }
 
     /** 处理服务器广播的皮肤 */
-    private static void handleBroadcast(MinecraftClient client, PacketByteBuf buf) {
-        UUID uuid = buf.readUuid();
-        String model = buf.readString(16);
-        String hash = buf.readString(64);
-        int len = buf.readVarInt();
-        byte[] data = new byte[len];
-        buf.readBytes(data);
+    private static void handleBroadcast(MinecraftClient client, SkinPayloads.SkinBroadcastPayload payload) {
+        UUID uuid = payload.uuid();
+        String model = payload.model();
+        String hash = payload.hash();
+        int len = payload.data().length;
+        byte[] data = payload.data();
 
         client.execute(() -> {
             SkinData skin = (len == 0) ? SkinData.EMPTY : new SkinData(model, hash, data);

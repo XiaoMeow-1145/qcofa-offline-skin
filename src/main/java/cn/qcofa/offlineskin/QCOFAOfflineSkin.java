@@ -1,8 +1,8 @@
 package cn.qcofa.offlineskin;
 
 import cn.qcofa.offlineskin.network.NetworkHandler;
+import cn.qcofa.offlineskin.network.SkinPayloads;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +20,11 @@ public class QCOFAOfflineSkin implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("QCOFA-OfflineSkin");
 
     /** 网络通道标识：客户端 -> 服务端 上报自己的皮肤信息 */
-    public static final Identifier SKIN_UPLOAD_CHANNEL = new Identifier(MOD_ID, "skin_upload");
+    public static final Identifier SKIN_UPLOAD_CHANNEL = Identifier.of(MOD_ID, "skin_upload");
     /** 网络通道标识：服务端 -> 客户端 广播某玩家的皮肤信息 */
-    public static final Identifier SKIN_BROADCAST_CHANNEL = new Identifier(MOD_ID, "skin_broadcast");
+    public static final Identifier SKIN_BROADCAST_CHANNEL = Identifier.of(MOD_ID, "skin_broadcast");
     /** 网络通道标识：服务端 -> 客户端 请求当前皮肤（玩家加入时） */
-    public static final Identifier SKIN_REQUEST_CHANNEL = new Identifier(MOD_ID, "skin_request");
+    public static final Identifier SKIN_REQUEST_CHANNEL = Identifier.of(MOD_ID, "skin_request");
 
     /** 皮肤 PNG 上传大小上限（64x64/64x64 skin 通常 < 4KB，留足余量） */
     public static final int MAX_SKIN_BYTES = 64 * 1024;
@@ -32,6 +32,7 @@ public class QCOFAOfflineSkin implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.info("[QCOFA-OfflineSkin] 正在初始化 QCOFA Offline Skin by xiaomeow_cn");
+        SkinPayloads.registerTypes();
         NetworkHandler.registerServerReceivers();
     }
 }
