@@ -1,7 +1,14 @@
-plugins {
-    id 'fabric-loom' version '1.6-SNAPSHOT'
-    id 'maven-publish'
+buildscript {
+    repositories {
+        maven { url = 'https://maven.fabricmc.net' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.fabricmc:fabric-loom:1.10-SNAPSHOT'
+    }
 }
+apply plugin: 'fabric-loom'
+apply plugin: 'maven-publish'
 
 version = project.mod_version
 group = project.maven_group
@@ -11,8 +18,8 @@ base {
 }
 
 repositories {
+    maven { url = 'https://maven.fabricmc.net' }
     mavenCentral()
-    maven { url = 'https://maven.fabricmc.net/' }
 }
 
 dependencies {
@@ -25,13 +32,12 @@ dependencies {
 processResources {
     inputs.property "version", project.version
     filteringCharset "UTF-8"
-
     filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
     it.options.release = targetJavaVersion
