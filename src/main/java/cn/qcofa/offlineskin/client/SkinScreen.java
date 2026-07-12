@@ -1,6 +1,7 @@
 package cn.qcofa.offlineskin.client;
 
 import cn.qcofa.offlineskin.QCOFAOfflineSkin;
+import cn.qcofa.offlineskin.network.SkinPayloads;
 import cn.qcofa.offlineskin.skin.LocalSkinFile;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -80,7 +81,7 @@ public class SkinScreen extends Screen {
                     try {
                         Path dir = LocalSkinFile.configDir(runDir);
                         dir.toFile().mkdirs();
-                        net.minecraft.Util.getOperatingSystem().open(dir.toFile());
+                        net.minecraft.util.Util.getOperatingSystem().open(dir.toFile());
                     } catch (Exception e) {
                         statusMessage = Text.translatable("qcofa_offline_skin.status.open_folder_fail")
                                 .formatted(Formatting.RED);
@@ -162,13 +163,9 @@ public class SkinScreen extends Screen {
 
         // 通知服务器移除：发送 modelType + 长度 0
         if (net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
-                .canSend(QCOFAOfflineSkin.SKIN_UPLOAD_CHANNEL)) {
-            net.minecraft.network.PacketByteBuf buf =
-                    net.fabricmc.fabric.api.networking.v1.PacketByteBufs.create();
-            buf.writeString(slim ? "slim" : "default", 16);
-            buf.writeVarInt(0);
+                .canSend(SkinPayloads.SkinUploadPayload.ID)) {
             net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
-                    QCOFAOfflineSkin.SKIN_UPLOAD_CHANNEL, buf);
+                    new SkinPayloads.SkinUploadPayload(slim ? "slim" : "default", new byte[0]));
         }
 
         statusMessage = Text.translatable("qcofa_offline_skin.status.cleared")
@@ -185,7 +182,7 @@ public class SkinScreen extends Screen {
             previewImgW = img.getWidth();
             previewImgH = img.getHeight();
             previewTexture = new NativeImageBackedTexture(img);
-            previewTextureId = new Identifier(QCOFAOfflineSkin.MOD_ID, "gui/preview_" + System.currentTimeMillis());
+            previewTextureId = Identifier.of(QCOFAOfflineSkin.MOD_ID, "gui/preview_" + System.currentTimeMillis());
             client.getTextureManager().registerTexture(previewTextureId, previewTexture);
         } catch (Exception e) {
             QCOFAOfflineSkin.LOGGER.warn("预览皮肤加载失败: {}", e.getMessage());
@@ -205,7 +202,7 @@ public class SkinScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderBackground(context);
+        renderBackground(context, mouseX, mouseY, delta);
 
         // 标题
         context.drawCenteredTextWithShadow(client.textRenderer, this.title,
