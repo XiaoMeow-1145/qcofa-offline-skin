@@ -1,0 +1,20 @@
+{
+  "qcofa_offline_skin.button.change_skin": "QCOFA 更换皮肤",
+  "qcofa_offline_skin.screen.title": "QCOFA 离线皮肤更换",
+  "qcofa_offline_skin.field.path": "皮肤文件路径",
+  "qcofa_offline_skin.field.path.hint": "输入皮肤 PNG 文件的完整路径...",
+  "qcofa_offline_skin.button.model": "模型",
+  "qcofa_offline_skin.model.default": "经典（宽臂）",
+  "qcofa_offline_skin.model.slim": "苗条（细臂）",
+  "qcofa_offline_skin.button.open_folder": "打开皮肤文件夹",
+  "qcofa_offline_skin.button.apply": "应用皮肤",
+  "qcofa_offline_skin.button.clear": "清除皮肤",
+  "qcofa_offline_skin.status.empty_path": "请输入皮肤文件路径",
+  "qcofa_offline_skin.status.too_large": "皮肤文件过大（上限 64KB）",
+  "qcofa_offline_skin.status.applied": "皮肤已应用！其他装了本模组的玩家可见",
+  "qcofa_offline_skin.status.read_fail": "读取皮肤文件失败",
+  "qcofa_offline_skin.status.cleared": "已清除离线皮肤",
+  "qcofa_offline_skin.status.open_folder_fail": "无法打开文件夹",
+  "qcofa_offline_skin.preview.empty": "（未设置皮肤）",
+  "qcofa_offline_skin.hint": "将皮肤 PNG 放入文件夹，或直接输入其路径后点击应用"
+}

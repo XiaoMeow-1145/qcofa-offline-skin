@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "qcofa_offline_skin",
+  "version": "${version}",
+  "name": "QCOFA Offline Skin",
+  "description": "QCOFA Offline Skin - 在离线/盗版客户端中更换皮肤，仅安装此模组的玩家之间可互相看到更换后的皮肤。由 QCOFA 额外模组提供，可用于 QuestCraft。",
+  "authors": [
+    "xiaomeow_cn"
+  ],
+  "contact": {
+    "homepage": "https://github.com/qcofa",
+    "sources": "https://github.com/qcofa/qcofa-offline-skin"
+  },
+  "license": "MIT",
+  "icon": "assets/qcofa_offline_skin/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "cn.qcofa.offlineskin.QCOFAOfflineSkin"
+    ],
+    "client": [
+      "cn.qcofa.offlineskin.client.QCOFAOfflineSkinClient"
+    ]
+  },
+  "mixins": [
+    "qcofa_offline_skin.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "fabric-api": "*",
+    "minecraft": "~1.20",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another_mod": "*"
+  },
+  "custom": {
+    "qcofa": {
+      "module": "offline-skin",
+      "questcraft_compatible": true
+    }
+  }
+}

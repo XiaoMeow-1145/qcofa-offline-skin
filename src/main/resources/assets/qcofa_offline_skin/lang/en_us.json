@@ -1,0 +1,20 @@
+{
+  "qcofa_offline_skin.button.change_skin": "QCOFA Change Skin",
+  "qcofa_offline_skin.screen.title": "QCOFA Offline Skin",
+  "qcofa_offline_skin.field.path": "Skin file path",
+  "qcofa_offline_skin.field.path.hint": "Enter the full path to a skin PNG...",
+  "qcofa_offline_skin.button.model": "Model",
+  "qcofa_offline_skin.model.default": "Classic (wide)",
+  "qcofa_offline_skin.model.slim": "Slim",
+  "qcofa_offline_skin.button.open_folder": "Open skin folder",
+  "qcofa_offline_skin.button.apply": "Apply skin",
+  "qcofa_offline_skin.button.clear": "Clear skin",
+  "qcofa_offline_skin.status.empty_path": "Please enter a skin file path",
+  "qcofa_offline_skin.status.too_large": "Skin file too large (max 64KB)",
+  "qcofa_offline_skin.status.applied": "Skin applied! Visible to other players with this mod",
+  "qcofa_offline_skin.status.read_fail": "Failed to read skin file",
+  "qcofa_offline_skin.status.cleared": "Offline skin cleared",
+  "qcofa_offline_skin.status.open_folder_fail": "Could not open folder",
+  "qcofa_offline_skin.preview.empty": "(no skin set)",
+  "qcofa_offline_skin.hint": "Put a skin PNG in the folder, or type its path and click Apply"
+}

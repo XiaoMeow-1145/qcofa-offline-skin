@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "cn.qcofa.offlineskin.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "GameMenuScreenMixin",
+    "AbstractClientPlayerEntityMixin",
+    "PlayerListEntryMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
