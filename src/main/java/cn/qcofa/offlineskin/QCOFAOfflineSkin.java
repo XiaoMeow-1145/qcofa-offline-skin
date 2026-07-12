@@ -1,8 +1,8 @@
 package cn.qcofa.offlineskin;
 
 import cn.qcofa.offlineskin.network.NetworkHandler;
+import cn.qcofa.offlineskin.network.SkinPayloads;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +32,7 @@ public class QCOFAOfflineSkin implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.info("[QCOFA-OfflineSkin] 正在初始化 QCOFA Offline Skin by xiaomeow_cn");
+        SkinPayloads.registerTypes();
         NetworkHandler.registerServerReceivers();
     }
 }
