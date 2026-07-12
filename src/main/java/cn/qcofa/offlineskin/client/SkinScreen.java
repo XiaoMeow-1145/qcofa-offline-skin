@@ -2,13 +2,14 @@ package cn.qcofa.offlineskin.client;
 
 import cn.qcofa.offlineskin.QCOFAOfflineSkin;
 import cn.qcofa.offlineskin.skin.LocalSkinFile;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -63,48 +64,45 @@ public class SkinScreen extends Screen {
         // 默认填入当前皮肤路径
         String current = LocalSkinFile.skinPngPath(runDir).toString();
         pathField.setText(current);
-        pathField.setPlaceholder(Text.translatable("qcofa_offline_skin.field.path.hint"));
         addSelectableChild(pathField);
 
         // 模型切换按钮
-        modelButton = ButtonWidget.builder(modelButtonText(), b -> {
+        modelButton = new ButtonWidget(cx - fieldW / 2, 66, 120, 20, modelButtonText(), b -> {
             slim = !slim;
             b.setMessage(modelButtonText());
-        }).dimensions(cx - fieldW / 2, 66, 120, 20).build();
+        });
         addDrawableChild(modelButton);
 
         // 打开皮肤文件夹
-        addDrawableChild(ButtonWidget.builder(
+        addDrawableChild(new ButtonWidget(cx - fieldW / 2 + 130, 66, 150, 20,
                 Text.translatable("qcofa_offline_skin.button.open_folder"),
                 b -> {
                     try {
                         Path dir = LocalSkinFile.configDir(runDir);
                         dir.toFile().mkdirs();
-                        net.minecraft.Util.getOperatingSystem().open(dir.toFile());
+                        if (java.awt.Desktop.isDesktopSupported()) {
+                            java.awt.Desktop.getDesktop().open(dir.toFile());
+                        }
                     } catch (Exception e) {
                         statusMessage = Text.translatable("qcofa_offline_skin.status.open_folder_fail")
                                 .formatted(Formatting.RED);
                     }
-                }
-        ).dimensions(cx - fieldW / 2 + 130, 66, 150, 20).build());
+                }));
 
         // 应用
-        addDrawableChild(ButtonWidget.builder(
+        addDrawableChild(new ButtonWidget(cx - fieldW / 2, 92, 130, 20,
                 Text.translatable("qcofa_offline_skin.button.apply"),
-                b -> applySkin())
-                .dimensions(cx - fieldW / 2, 92, 130, 20).build());
+                b -> applySkin()));
 
         // 清除
-        addDrawableChild(ButtonWidget.builder(
+        addDrawableChild(new ButtonWidget(cx - fieldW / 2 + 140, 92, 140, 20,
                 Text.translatable("qcofa_offline_skin.button.clear"),
-                b -> clearSkin())
-                .dimensions(cx - fieldW / 2 + 140, 92, 140, 20).build());
+                b -> clearSkin()));
 
         // 完成
-        addDrawableChild(ButtonWidget.builder(
+        addDrawableChild(new ButtonWidget(cx - 100, this.height - 28, 200, 20,
                 Text.translatable("gui.done"),
-                b -> close())
-                .dimensions(cx - 100, this.height - 28, 200, 20).build());
+                b -> close()));
 
         loadPreview();
     }
@@ -204,42 +202,43 @@ public class SkinScreen extends Screen {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderBackground(context);
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        renderBackground(matrices);
 
         // 标题
-        context.drawCenteredTextWithShadow(client.textRenderer, this.title,
+        drawCenteredTextWithShadow(matrices, client.textRenderer, this.title.asOrderedText(),
                 this.width / 2, 14, 0xFFFFFF);
 
         // 路径输入框
-        pathField.render(context, mouseX, mouseY, delta);
+        pathField.render(matrices, mouseX, mouseY, delta);
 
         // 状态消息
-        context.drawCenteredTextWithShadow(client.textRenderer, statusMessage,
+        drawCenteredTextWithShadow(matrices, client.textRenderer, statusMessage.asOrderedText(),
                 this.width / 2, 120, 0xFFFFFF);
 
         // 预览
         int px = this.width / 2 - PREVIEW_SIZE / 2;
         int py = 140;
-        context.fill(px - 2, py - 2, px + PREVIEW_SIZE + 2, py + PREVIEW_SIZE + 2, 0x40404040);
+        fill(matrices, px - 2, py - 2, px + PREVIEW_SIZE + 2, py + PREVIEW_SIZE + 2, 0x40404040);
         if (previewTextureId != null) {
             // 将整张皮肤纹理图缩放绘制到预览框
-            context.drawTexture(previewTextureId, px, py,
+            RenderSystem.setShaderTexture(0, previewTextureId);
+            drawTexture(matrices, px, py,
                     PREVIEW_SIZE, PREVIEW_SIZE,
-                    0, 0, previewImgW, previewImgH,
+                    0.0F, 0.0F, previewImgW, previewImgH,
                     previewImgW, previewImgH);
         } else {
-            context.drawCenteredTextWithShadow(client.textRenderer,
-                    Text.translatable("qcofa_offline_skin.preview.empty").formatted(Formatting.GRAY),
+            drawCenteredTextWithShadow(matrices, client.textRenderer,
+                    Text.translatable("qcofa_offline_skin.preview.empty").formatted(Formatting.GRAY).asOrderedText(),
                     this.width / 2, py + PREVIEW_SIZE / 2 - 4, 0xFFFFFF);
         }
 
         // 提示文字
-        context.drawCenteredTextWithShadow(client.textRenderer,
-                Text.translatable("qcofa_offline_skin.hint").formatted(Formatting.DARK_GRAY),
+        drawCenteredTextWithShadow(matrices, client.textRenderer,
+                Text.translatable("qcofa_offline_skin.hint").formatted(Formatting.DARK_GRAY).asOrderedText(),
                 this.width / 2, this.height - 44, 0xFFFFFF);
 
-        super.render(context, mouseX, mouseY, delta);
+        super.render(matrices, mouseX, mouseY, delta);
     }
 
     @Override

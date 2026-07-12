@@ -27,9 +27,8 @@ public abstract class GameMenuScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void qcofa$addSkinButton(CallbackInfo ci) {
         // 左上角小按钮，避开原有居中按钮布局
-        this.addDrawableChild(ButtonWidget.builder(
+        this.addDrawableChild(new ButtonWidget(4, 4, 120, 20,
                 Text.translatable("qcofa_offline_skin.button.change_skin"),
-                button -> MinecraftClient.getInstance().setScreen(new SkinScreen(this))
-        ).dimensions(4, 4, 120, 20).build());
+                button -> MinecraftClient.getInstance().setScreen(new SkinScreen(this))));
     }
 }
