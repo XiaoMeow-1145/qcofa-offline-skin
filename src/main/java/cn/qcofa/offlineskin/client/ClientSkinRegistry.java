@@ -65,7 +65,7 @@ public final class ClientSkinRegistry {
         }
 
         NativeImageBackedTexture tex = new NativeImageBackedTexture(image);
-        Identifier id = new Identifier(QCOFAOfflineSkin.MOD_ID, "dynamic/" + uuid.toString().replace("-", ""));
+        Identifier id = Identifier.of(QCOFAOfflineSkin.MOD_ID, "dynamic/" + uuid.toString().replace("-", ""));
         MinecraftClient.getInstance().getTextureManager().registerTexture(id, tex);
         SKINS.put(uuid, new Entry(id, data.isSlim(), data.hash(), tex));
     }
