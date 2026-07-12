@@ -80,7 +80,7 @@ public class SkinScreen extends Screen {
                     try {
                         Path dir = LocalSkinFile.configDir(runDir);
                         dir.toFile().mkdirs();
-                        net.minecraft.Util.getOperatingSystem().open(dir.toFile());
+                        net.minecraft.util.Util.getOperatingSystem().open(dir.toFile());
                     } catch (Exception e) {
                         statusMessage = Text.translatable("qcofa_offline_skin.status.open_folder_fail")
                                 .formatted(Formatting.RED);
@@ -205,7 +205,7 @@ public class SkinScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderBackground(context);
+        renderBackground(context, mouseX, mouseY, delta);
 
         // 标题
         context.drawCenteredTextWithShadow(client.textRenderer, this.title,
