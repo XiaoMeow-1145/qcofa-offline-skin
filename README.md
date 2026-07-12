@@ -233,14 +233,6 @@ qcofa-offline-skin/
 - **Minecraft** 1.19.2 - 1.21.5
 - **Java** 17 (MC 1.19.x - 1.20.4) 或 Java 21 (MC 1.20.5+)
 
-## 许可证
-
-MIT License - 见 [LICENSE](LICENSE)
-
-## 作者
-
-xiaomeow_cn
-
 ## 反馈
 
 如遇 bug 请在 [GitHub Issues](https://github.com/XiaoMeow-1145/qcofa-offline-skin/issues) 中反馈。
